@@ -1,5 +1,3 @@
-const words = ['JAVASCRIPT', 'PROGRAMMING', 'COMPUTER', 'HANGMAN', 'DEVELOPER', 'ALGORITHM', 'FUNCTION', 'VARIABLE', 'INTERNET', 'KEYBOARD', 'MONITOR', 'SOFTWARE', 'HARDWARE', 'DATABASE', 'NETWORK', 'PYTHON', 'CODING', 'DEBUG', 'COMPILE', 'EXECUTE'];
-
 let currentWord = '';
 let guessedLetters = [];
 let wrongGuesses = 0;
@@ -147,8 +145,20 @@ function disableAllKeys() {
     keys.forEach(key => key.disabled = true);
 }
 
-function newGame() {
-    currentWord = words[Math.floor(Math.random() * words.length)];
+async function newGame() {
+    // Show loading message
+    messageEl.textContent = 'Loading...';
+    
+    // Fetch random word from API
+    try {
+        const response = await fetch('https://random-word-api.herokuapp.com/word?length=6');
+        const data = await response.json();
+        currentWord = data[0].toUpperCase();
+    } catch (error) {
+        console.error('Error fetching word:', error);
+        currentWord = 'HANGMAN'; // Fallback if API fails
+    }
+    
     guessedLetters = [];
     wrongGuesses = 0;
     gameOver = false;
